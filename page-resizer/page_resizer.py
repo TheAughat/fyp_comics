@@ -13,12 +13,15 @@ def calculate_gutters(img):
 def do_padding(img, padding, pad_x):
     w = max(img.size)
     h = w  # since we're making the img square
+
     res = Image.new(img.mode, (w, h), (255, 255, 255))
     left, top = 0, 0
+
     if pad_x:
         top = padding
     else:
         left = padding
+
     res.paste(img, (left, top))
     return res
 
@@ -30,24 +33,29 @@ def change_to_square(img):
 
 
 def resize_square_image(img, target_size = 512):
-    return img.resize((target_size, target_size))
+    return img.resize((target_size, target_size), Image.LANCZOS)
 
 
 def resize_image(filepath):
     img = Image.open(filepath)
     final = img.copy
+
     if not is_square(img):
         final = change_to_square(img)
+        
     return resize_square_image(final)
 
 
 def resize_all():
     input_path = 'input-images/'
+    img_quality = 100
     imgs = os.listdir(input_path)
+
     for img in imgs:
         res = resize_image(input_path + img)
-        res.save('output-images/' + img)
+        res.save('output-images/' + img, 'JPEG', quality=img_quality)
         print('Completed image:', img)
+
     print('COMPLETED ALL!')
 
 
